@@ -26,9 +26,7 @@ const getters = {
     cShare1(state) { return state.share1 },
     cShare1ImageData(state) { return state.share1ImageData },
     cShare2ImageData(state) { return state.share2ImageData },
-    cShare2(state) { return state.share2 },
-    cDecrypted(state) { return state.classicDecryptedImage },
-    otpDecrypted(state) { return state.otpDecryptedImage }
+    cShare2(state) { return state.share2 }
 }
 
 const mutations = {
