@@ -294,6 +294,42 @@ export default {
       this.isEncrypted = true
       this.canvasShare.width = 0
       this.canvasShare.height = 0
+
+      if (this.share1 !== "" && this.share2 !== "") this.getClassicShareData(firstImgData, secondImgData)
+    },
+    getClassicShareData(firstImgData, secondImgData) {
+      this.canvasShare.width = this.share1.width
+      this.canvasShare.height = this.share1.height
+
+      let imgData1 = this.ctxShare.getImageData(0, 0, this.canvasShare.width, this.canvasShare.height)
+      let imgData2 = this.ctxShare.getImageData(0, 0, this.canvasShare.width, this.canvasShare.height)
+
+      this.share1Data = new Image(this.share1.width, this.share1.height)
+      this.share2Data = new Image(this.share2.width, this.share2.height)
+
+      for (let i = 0; i < firstImgData.data.length; i += 4) {
+        if (firstImgData.data[i] === 255) imgData1.data[i + 3] = 0
+        else if (firstImgData.data[i] === 0) imgData1.data[i + 3] = 255
+        imgData1.data[i] = firstImgData.data[i]
+        imgData1.data[i + 1] = firstImgData.data[i + 1]
+        imgData1.data[i + 2] = firstImgData.data[i + 2]
+
+        if (secondImgData.data[i] === 255) imgData2.data[i + 3] = 0
+        else if (secondImgData.data[i] === 0) imgData2.data[i + 3] = 255
+        imgData2.data[i] = secondImgData.data[i]
+        imgData2.data[i + 1] = secondImgData.data[i + 1]
+        imgData2.data[i + 2] = secondImgData.data[i + 2]
+      }
+
+      this.share1Data.data = imgData1
+      this.share2Data.data = imgData2
+
+      this.ctxShare.putImageData(imgData1, 0, 0)
+      this.share1Data.src = window.location.href = this.canvasShare.toDataURL("image/png").replace("image/png", "image/octet-stream")
+      this.ctxShare.putImageData(imgData2, 0, 0)
+      this.share2Data.src = window.location.href = this.canvasShare.toDataURL("image/png").replace("image/png", "image/octet-stream")
+      this.canvasShare.width = 0
+      this.canvasShare.height = 0
     }
   }
 }
