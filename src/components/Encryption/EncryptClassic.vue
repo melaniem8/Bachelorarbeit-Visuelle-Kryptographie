@@ -199,75 +199,39 @@ export default {
           //share2 = (0,1,1,0) falls weiß
           //share2 = (1,0,0,1) falls schwarz
 
-          if (i % 2 * bigWidth < bigWidth) {
-            //share1 → die erste Zeile ändern
-            //share1 muss (0,1) sein, also (255,0)
-            firstImgData.data[i] = 255
-            firstImgData.data[i + 1] = 255
-            firstImgData.data[i + 2] = 255
-            firstImgData.data[i + 3] = 255
-            firstImgData.data[i + 4] = 0
-            firstImgData.data[i + 5] = 0
-            firstImgData.data[i + 6] = 0
-            firstImgData.data[i + 7] = 255
+          //share1 → die erste Zeile ändern
+          //share1 muss (0,1) sein, also (255,0)
+          firstImgData.data[i] = 255
+          firstImgData.data[i + 1] = 255
+          firstImgData.data[i + 2] = 255
+          firstImgData.data[i + 3] = 255
+          firstImgData.data[i + 4] = 0
+          firstImgData.data[i + 5] = 0
+          firstImgData.data[i + 6] = 0
+          firstImgData.data[i + 7] = 255
 
-            //share2 → die erste Zeile ändern
-            if (originalBlack) {
-              //share2 muss (1,0) sein, also (0,255)
-              secondImgData.data[i] = 0
-              secondImgData.data[i + 1] = 0
-              secondImgData.data[i + 2] = 0
-              secondImgData.data[i + 3] = 255
-              secondImgData.data[i + 4] = 255
-              secondImgData.data[i + 5] = 255
-              secondImgData.data[i + 6] = 255
-              secondImgData.data[i + 7] = 255
-            } else {
-              //weißes Pixel
-              //share2 muss (0,1) sein, also (255,0)
-              secondImgData.data[i] = 255
-              secondImgData.data[i + 1] = 255
-              secondImgData.data[i + 2] = 255
-              secondImgData.data[i + 3] = 255
-              secondImgData.data[i + 4] = 0
-              secondImgData.data[i + 5] = 0
-              secondImgData.data[i + 6] = 0
-              secondImgData.data[i + 7] = 255
-            }
+          //share2 → die erste Zeile ändern
+          if (originalBlack) {
+            //share2 muss (1,0) sein, also (0,255)
+            secondImgData.data[i] = 0
+            secondImgData.data[i + 1] = 0
+            secondImgData.data[i + 2] = 0
+            secondImgData.data[i + 3] = 255
+            secondImgData.data[i + 4] = 255
+            secondImgData.data[i + 5] = 255
+            secondImgData.data[i + 6] = 255
+            secondImgData.data[i + 7] = 255
           } else {
-            //share1 → die zweite Zeile ändern
-            //share1 muss (1,0) sein, also (0,255)
-            firstImgData.data[i] = 0
-            firstImgData.data[i + 1] = 0
-            firstImgData.data[i + 2] = 0
-            firstImgData.data[i + 3] = 255
-            firstImgData.data[i + 4] = 255
-            firstImgData.data[i + 5] = 255
-            firstImgData.data[i + 6] = 255
-            firstImgData.data[i + 7] = 255
-
-            //share2 → die zweite Zeile ändern
-            if (originalBlack) {
-              //share2 muss (0,1) sein, also (255,0)
-              secondImgData.data[i] = 255
-              secondImgData.data[i + 1] = 255
-              secondImgData.data[i + 2] = 255
-              secondImgData.data[i + 3] = 255
-              secondImgData.data[i + 4] = 0
-              secondImgData.data[i + 5] = 0
-              secondImgData.data[i + 6] = 0
-              secondImgData.data[i + 7] = 255
-            } else {
-              //share2 muss (1,0) sein, also (0,255)
-              secondImgData.data[i] = 0
-              secondImgData.data[i + 1] = 0
-              secondImgData.data[i + 2] = 0
-              secondImgData.data[i + 3] = 255
-              secondImgData.data[i + 4] = 255
-              secondImgData.data[i + 5] = 255
-              secondImgData.data[i + 6] = 255
-              secondImgData.data[i + 7] = 255
-            }
+            //weißes Pixel
+            //share2 muss (0,1) sein, also (255,0)
+            secondImgData.data[i] = 255
+            secondImgData.data[i + 1] = 255
+            secondImgData.data[i + 2] = 255
+            secondImgData.data[i + 3] = 255
+            secondImgData.data[i + 4] = 0
+            secondImgData.data[i + 5] = 0
+            secondImgData.data[i + 6] = 0
+            secondImgData.data[i + 7] = 255
           }
         }
       }
@@ -292,6 +256,42 @@ export default {
       store.commit('updateShare2ImageData', secondImgData)
 
       this.isEncrypted = true
+      this.canvasShare.width = 0
+      this.canvasShare.height = 0
+
+      if (this.share1 !== "" && this.share2 !== "") this.getShareData(firstImgData, secondImgData)
+    },
+    getShareData(firstImgData, secondImgData) {
+      this.canvasShare.width = this.share1.width
+      this.canvasShare.height = this.share1.height
+
+      let imgData1 = this.ctxShare.getImageData(0, 0, this.canvasShare.width, this.canvasShare.height)
+      let imgData2 = this.ctxShare.getImageData(0, 0, this.canvasShare.width, this.canvasShare.height)
+
+      this.share1Data = new Image(this.share1.width, this.share1.height)
+      this.share2Data = new Image(this.share2.width, this.share2.height)
+
+      for (let i = 0; i < firstImgData.data.length; i += 4) {
+        if (firstImgData.data[i] === 255) imgData1.data[i + 3] = 0
+        else if (firstImgData.data[i] === 0) imgData1.data[i + 3] = 255
+        imgData1.data[i] = firstImgData.data[i]
+        imgData1.data[i + 1] = firstImgData.data[i + 1]
+        imgData1.data[i + 2] = firstImgData.data[i + 2]
+
+        if (secondImgData.data[i] === 255) imgData2.data[i + 3] = 0
+        else if (secondImgData.data[i] === 0) imgData2.data[i + 3] = 255
+        imgData2.data[i] = secondImgData.data[i]
+        imgData2.data[i + 1] = secondImgData.data[i + 1]
+        imgData2.data[i + 2] = secondImgData.data[i + 2]
+      }
+
+      this.share1Data.data = imgData1
+      this.share2Data.data = imgData2
+
+      this.ctxShare.putImageData(imgData1, 0, 0)
+      this.share1Data.src = window.location.href = this.canvasShare.toDataURL("image/png").replace("image/png", "image/octet-stream")
+      this.ctxShare.putImageData(imgData2, 0, 0)
+      this.share2Data.src = window.location.href = this.canvasShare.toDataURL("image/png").replace("image/png", "image/octet-stream")
       this.canvasShare.width = 0
       this.canvasShare.height = 0
     }
